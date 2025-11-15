@@ -23,7 +23,7 @@ class RepositoryController extends Controller
         Repository::create([
             'user_id' => Auth::id(),
             'name' => $request->name,
-            'slug' => strtolower(str_replace(' ', '-', $request->name)),
+    'slug' => Auth::user()->username . '/' . strtolower(str_replace(' ', '-', $request->name)),
             'description' => $request->description,
             'private' => $request->private,
         ]);
@@ -45,6 +45,17 @@ class RepositoryController extends Controller
 
     $repository->update($request->all());
     return redirect()->route('repositories.index');
+    }
+
+    public function destroy(Repository $repository): RedirectResponse
+    {
+        if ($repository->user_id !== Auth::id()) {
+            abort(403);
+        }
+
+        $repository->delete();
+
+        return redirect()->route('repositories.index');
     }
 
 }

@@ -1,3 +1,14 @@
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
 import {
     Card,
@@ -18,8 +29,9 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { Textarea } from '@/components/ui/textarea';
+import { destroy } from '@/routes/repositories';
 import { router, useForm } from '@inertiajs/react';
-import { Pen, Settings } from 'lucide-react';
+import { Pen, Settings, Trash } from 'lucide-react';
 import AppLayout from '../Layouts/AppLayout';
 
 function Index({ repos }) {
@@ -128,16 +140,6 @@ function Index({ repos }) {
                         <CardHeader>
                             <CardTitle className="flex justify-between text-lg">
                                 {repo.name}
-                                <Button
-                                    variant={'outline'}
-                                    onClick={() =>
-                                        router.visit(
-                                            `/repositories/${repo.id}/edit`,
-                                        )
-                                    }
-                                >
-                                    Edit <Settings />
-                                </Button>
                             </CardTitle>
                             <CardDescription>
                                 {repo.description || 'No description'}
@@ -154,6 +156,54 @@ function Index({ repos }) {
                             >
                                 {repo.private ? 'Private' : 'Public'}
                             </span>
+                            <div className="flex flex-col gap-4">
+                                <Button
+                                    variant={'outline'}
+                                    onClick={() =>
+                                        router.visit(
+                                            `/repositories/${repo.id}/edit`,
+                                        )
+                                    }
+                                >
+                                    Edit <Settings />
+                                </Button>
+                                <AlertDialog>
+                                    <AlertDialogTrigger>
+                                        <Button variant={'destructive'}>
+                                            Delete <Trash />
+                                        </Button>
+                                    </AlertDialogTrigger>
+                                    <AlertDialogContent>
+                                        <AlertDialogHeader>
+                                            <AlertDialogTitle>
+                                                Are you absolutely sure?
+                                            </AlertDialogTitle>
+                                            <AlertDialogDescription>
+                                                This action cannot be undone.
+                                                This will permanently delete the
+                                                repository
+                                            </AlertDialogDescription>
+                                        </AlertDialogHeader>
+                                        <AlertDialogFooter>
+                                            <AlertDialogCancel>
+                                                Cancel
+                                            </AlertDialogCancel>
+                                            <AlertDialogAction
+                                                className="bg-destructive text-background hover:bg-destructive/90"
+                                                onClick={() =>
+                                                    router.delete(
+                                                        destroy.url({
+                                                            id: repo.id,
+                                                        }),
+                                                    )
+                                                }
+                                            >
+                                                Confirm
+                                            </AlertDialogAction>
+                                        </AlertDialogFooter>
+                                    </AlertDialogContent>
+                                </AlertDialog>
+                            </div>
                         </CardContent>
                     </Card>
                 ))}
