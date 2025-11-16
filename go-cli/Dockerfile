@@ -1,13 +1,14 @@
-FROM golang:1.22-alpine AS builder
+FROM golang:1.25-alpine
+
 WORKDIR /app
 COPY go.mod ./
 RUN go mod download
-COPY . .
-RUN go build -o /bin/go-cli
 
-FROM alpine:3.20
-WORKDIR /srv
-COPY --from=builder /bin/go-cli ./go-cli
+RUN go install github.com/air-verse/air@latest
+
+COPY . .
+
 ENV PORT=8080
 EXPOSE 8080
-CMD ["/srv/go-cli"]
+
+CMD ["air", "-c", ".ari.toml"]

@@ -1,3 +1,10 @@
 module go-cli
 
-go 1.22
+go 1.25
+
+require (
+	github.com/go-chi/chi/v5 v5.2.3 // indirect
+	github.com/libgit2/git2go/v34 v34.0.0 // indirect
+	golang.org/x/crypto v0.0.0-20201203163018-be400aefbc4c // indirect
+	golang.org/x/sys v0.0.0-20201204225414-ed752295db88 // indirect
+)

@@ -1,12 +1,28 @@
 services:
+  git-service:
+    build:
+      context: ./go-cli/
+      dockerfile: ./Dockerfile
+    volumes:
+      - ~/git-repos:/repos
+    environment:
+      - PORT=8080
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
   app:
     build:
       context: .
       dockerfile: Dockerfile
     ports:
       - "8000:8000"
-      - "5173:5173"
     volumes:
       - ./:/var/www
+    depends_on:
+      git-service:
+        condition: service_healthy
     environment:
       LARAVEL_BYPASS_ENV_CHECK: "1"
